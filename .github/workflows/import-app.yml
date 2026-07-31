@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   import:
-    if: ${{ hashFiles('.upload/part-*') != '' }}
+    if: ${{ hashFiles('.upload/ready') != '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -21,7 +21,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat .upload/part-* > /tmp/store-accountability-manager.zip
+          : > /tmp/store-accountability-manager.zip
+          for part in .upload/part-*.b64; do
+            base64 --decode "$part" >> /tmp/store-accountability-manager.zip
+          done
           mkdir -p /tmp/store-accountability-manager
           unzip -q /tmp/store-accountability-manager.zip -d /tmp/store-accountability-manager
           test -f /tmp/store-accountability-manager/store-accountability-manager/package.json
