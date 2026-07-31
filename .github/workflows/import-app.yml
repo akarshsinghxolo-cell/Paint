@@ -3,13 +3,14 @@ name: Import application source
 on:
   push:
     branches: [main]
+    paths:
+      - '.upload/ready'
 
 permissions:
   contents: write
 
 jobs:
   import:
-    if: ${{ hashFiles('.upload/ready') != '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
